@@ -2,9 +2,7 @@
 #include <limits>
 
 int main() {
-    std::cout << "Введите цифру " << std::endl;
-    int x;
-    std::cin >> x;
+    
     std::cout << "Тип: int" << std::endl;
     std::cout << "Размер: (байт) " << sizeof(int) << std::endl;
     std::cout << "Максимум: " << std::numeric_limits<int>::max() << std::endl;
@@ -19,9 +17,6 @@ int main() {
     std::cout << "Минимум: " << std::numeric_limits<unsigned int>::min() << std::endl;
     std::cout <<"------------------" << std::endl;
     
-    std::cout << "Введите десятичную дробь " << std::endl;
-    float y;
-    std::cin >> y;
     std::cout << "Тип: float" << std::endl;
     std::cout << "Размер: (байт) " << sizeof(float) << std::endl;
     std::cout << "Максимум: " << std::numeric_limits<float>::max() << std::endl;
@@ -30,5 +25,20 @@ int main() {
     std::cout << "Размер: (байт) " << sizeof(double) << std::endl;
     std::cout << "Максимум: " << std::numeric_limits<double>::max() << std::endl;
     std::cout << "Минимум: " << std::numeric_limits<double>::min() << std::endl;
+ 
+    std::cout << "------------------" << std::endl;
+    std::cout << "Арифметические действия между целами числами ( 8 и 5 )" << std::endl;
+    int x = 8;
+    int y = 5;
+    std::cout << "Сложение: " << x + y << std::endl;
+    std::cout << "Умножение: " << x * y << std::endl;
+    std::cout << "Деление: " << x / y << std::endl;
+    std::cout << "Остаток от деления: " << x % y << std::endl;
+    std::cout << "Арифметические действия между float(2.0) и int(5)" << std::endl;
+    int a = 5;
+    float b = 2.0;
+    std::cout << "Деление: " << a / b << std::endl;
+    std::cout << "Деление: " << b / a << std::endl;
     return 0;
+    
 }

@@ -27,6 +27,13 @@ int main() {
     std::cout << kv1 << std::endl;
     std::cout << kv3 << std::endl;
     
+    double a2 = 0.1;
+    double b2 = 0.2;
+    double c2 = a2 + b2;
+
+    std::cout << std::setprecision(17); 
+    std::cout << "0.1 + 0.2 = " << c2 << std::endl;
+    
     float j, k, l;
     int n;
     std::cout << "Введите три числа:" << std::endl;
@@ -34,7 +41,7 @@ int main() {
     std::cout << "Введите точность которая нужна:" << std::endl;
     std::cin >> n;
     double drli = (j + k + l) / 3.0;
-    std::cout << std::fixed << std::setprecision(n);
+    std::cout << std::setprecision(n);
     std::cout << drli << std::endl;
     
     

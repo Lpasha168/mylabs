@@ -20,7 +20,8 @@ int main() {
         if (k == 0) {
             std::cout << "No perfect numbers found" << std::endl;
         }   
-    
-    return 0;
+    }else {
+        std::cout << "Invalid input" << std::endl;
     }
+    return 0
 }

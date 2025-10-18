@@ -34,7 +34,7 @@ int day;
         default: cout << "Неверный номер дня"; break;
     }
 
-*/
+/*
     short n;
     std::cin >> n;
     if ((n >= 2) && (n <= 1000)){

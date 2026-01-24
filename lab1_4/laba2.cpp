@@ -52,3 +52,51 @@ int main() {
     
     return 0;
 }
+
+#include <iostream>
+using namespace std;
+
+// Состояние 10 дверей
+bool door1 = false;
+bool door2 = false;
+bool door3 = false;
+bool door4 = false;
+bool door5 = false;
+bool door6 = false;
+bool door7 = false;
+bool door8 = false;
+bool door9 = false;
+bool door10 = false;
+
+// Функции
+void openDoor(bool &door) {
+    door = true;
+}
+
+void closeDoor(bool &door) {
+    door = false;
+}
+
+void printDoor(bool door, int number) {
+    cout << "Дверь " << number << ": "
+         << (door ? "открыта" : "закрыта") << endl;
+}
+
+int main() {
+    openDoor(door1);
+    openDoor(door5);
+    openDoor(door9);
+
+    printDoor(door1, 1);
+    printDoor(door2, 2);
+    printDoor(door3, 3);
+    printDoor(door4, 4);
+    printDoor(door5, 5);
+    printDoor(door6, 6);
+    printDoor(door7, 7);
+    printDoor(door8, 8);
+    printDoor(door9, 9);
+    printDoor(door10, 10);
+
+    return 0;
+}

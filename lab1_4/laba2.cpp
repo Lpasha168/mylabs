@@ -100,3 +100,29 @@ int main() {
 
     return 0;
 }
+
+#include <iostream>
+using namespace std;
+
+class Test {
+public:
+    Test() {
+        cout << "Конструктор\n";
+    }
+
+    ~Test() {
+        cout << "Деструктор\n";
+    }
+};
+
+int main() {
+    cout << "Начало main\n";
+
+    {
+        Test obj;
+        cout << "Внутри блока\n";
+    } // ← здесь объект выходит из области видимости
+
+    cout << "Конец main\n";
+    return 0;
+}

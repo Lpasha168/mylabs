@@ -28,6 +28,7 @@ int main() {
     std::cout << kv3 << std::endl;
     
     double a2 = 0.1;
+    
     double b2 = 0.2;
     double c2 = a2 + b2;
 
@@ -126,3 +127,9 @@ int main() {
     cout << "Конец main\n";
     return 0;
 }
+class MyClass {
+public:
+    int x;
+    MyClass() : MyClass(10) {} // Делегирующий конструктор
+    MyClass(int val) { x = val; } // Целевой конструктор
+};

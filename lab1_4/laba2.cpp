@@ -54,3 +54,16 @@ int main() {
     return 0;
 }
 
+[requires]
+fmt/10.1.0
+spdlog/1.12.0
+
+[generators]
+cmake
+cmake_find_package
+
+[options]
+spdlog:header_only=True
+
+[imports]
+bin, *.dll -> ./bin

@@ -91,4 +91,5 @@ int main() {
     }
     return 0;
 }
+git clone --recursive https://github.com/mrBelka/qt_sample_app.git
 

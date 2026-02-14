@@ -95,3 +95,18 @@ git clone --recursive https://github.com/mrBelka/qt_sample_app.git
 https://git-scm.com/download/win
 set GIT_CLONE_PROTECTION_ACTIVE=false
 
+QTableWidget *table = new QTableWidget(this);
+table->setRowCount(5);
+table->setColumnCount(3);
+
+table->setItem(0, 0, new QTableWidgetItem("Иван"));
+table->setItem(0, 1, new QTableWidgetItem("25"));
+table->setItem(0, 2, new QTableWidgetItem("Москва"));
+
+int row = table->currentRow();
+int column = table->currentColumn();
+
+QTableWidgetItem *item = table->currentItem();
+
+if (item)
+    QString text = item->text();

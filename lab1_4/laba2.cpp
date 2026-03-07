@@ -110,3 +110,75 @@ QTableWidgetItem *item = table->currentItem();
 
 if (item)
     QString text = item->text();
+
+#include <iostream>
+#include <stdexcept>
+
+class Resource {
+public:
+    Resource() { std::cout << "Resource acquired\n"; }
+    ~Resource() { std::cout << "Resource released\n"; }
+    void doWork() { std::cout << "Working...\n"; }
+};
+
+void processData(int value) {
+    Resource* res1 = new Resource();
+    Resource* res2 = new Resource();
+    
+    if (value < 0) {
+        throw std::runtime_error("Negative value not allowed");
+    }
+    
+    res1->doWork();
+    res2->doWork();
+    
+    delete res1;
+    delete res2;
+}
+
+int main() {
+    try {
+        processData(-5);
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+    
+    std::cout << "Program continues...\n";
+    return 0;
+}
+// исправленный 
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+
+class Resource {
+public:
+    Resource() { std::cout << "Resource acquired\n"; }
+    ~Resource() { std::cout << "Resource released\n"; }
+    void doWork() { std::cout << "Working...\n"; }
+};
+
+void processData(int value) {
+    auto res1 = std::make_unique<Resource>();
+    auto res2 = std::make_unique<Resource>();
+    
+    if (value < 0) {
+        throw std::runtime_error("Negative value not allowed");
+    }
+    
+    res1->doWork();
+    res2->doWork();
+    
+    // Автоматическое освобождение при выходе из функции
+}
+
+int main() {
+    try {
+        processData(-5);
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+    
+    std::cout << "Program continues...\n";
+    return 0;
+}

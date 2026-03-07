@@ -182,3 +182,228 @@ int main() {
     std::cout << "Program continues...\n";
     return 0;
 }
+
+// Задание 2 
+#include <iostream>
+#include <memory>
+
+struct A;
+struct B;
+
+struct A {
+    std::shared_ptr<B> b_ptr;  // A владеет B
+    ~A() { std::cout << "A удалён\n"; }
+};
+
+struct B {
+    std::shared_ptr<A> a_ptr;  // B владеет A - вот проблема!
+    ~B() { std::cout << "B удалён\n"; }
+};
+
+int main() {
+    std::cout << "Создаём объекты...\n";
+    
+    auto a = std::make_shared<A>();
+    auto b = std::make_shared<B>();
+    
+    // Создаём циклическую ссылку
+    a->b_ptr = b;
+    b->a_ptr = a;
+    
+    std::cout << "Счётчик ссылок A: " << a.use_count() << "\n";
+    std::cout << "Счётчик ссылок B: " << b.use_count() << "\n";
+    
+    std::cout << "Выходим из main - объекты НЕ удалятся!\n";
+    return 0;
+}
+// Решение 
+#include <iostream>
+#include <memory>
+
+struct A;
+struct B;
+
+struct A {
+    std::shared_ptr<B> b_ptr;  // A по-прежнему владеет B
+    ~A() { std::cout << "A удалён\n"; }
+};
+
+struct B {
+    std::weak_ptr<A> a_ptr;    // B просто наблюдает за A (weak_ptr)
+    ~B() { std::cout << "B удалён\n"; }
+};
+
+int main() {
+    std::cout << "Создаём объекты...\n";
+    
+    auto a = std::make_shared<A>();
+    auto b = std::make_shared<B>();
+    
+    // Связываем объекты
+    a->b_ptr = b;
+    b->a_ptr = a;  // weak_ptr не увеличивает счётчик!
+    
+    std::cout << "Счётчик ссылок A: " << a.use_count() << "\n";  // Только 1!
+    std::cout << "Счётчик ссылок B: " << b.use_count() << "\n";
+    
+    std::cout << "Выходим из main - объекты УДАЛЯТСЯ!\n";
+    return 0;
+}
+
+//Задание 3 пример кода std::move
+#include <iostream>
+#include <memory>
+
+struct Resource {
+    int id;
+    Resource(int i) : id(i) { 
+        std::cout << "Resource " << id << " создан\n"; 
+    }
+    ~Resource() { 
+        std::cout << "Resource " << id << " уничтожен\n"; 
+    }
+    void use() { 
+        std::cout << "Использую Resource " << id << "\n"; 
+    }
+};
+
+int main() {
+    std::cout << "=== unique_ptr перемещение ===\n";
+    
+    // Создаём unique_ptr
+    auto ptr1 = std::make_unique<Resource>(1);
+    std::cout << "ptr1 указывает на Resource " << ptr1->id << "\n";
+    
+    // Перемещаем владение в ptr2
+    auto ptr2 = std::move(ptr1);
+    
+    std::cout << "После move:\n";
+    std::cout << "ptr1: " << (ptr1 ? "не пустой" : "пустой (nullptr)") << "\n";
+    std::cout << "ptr2 указывает на Resource " << ptr2->id << "\n";
+    
+    // ptr2->use();  // Можно использовать ptr2
+    // ptr1->use();  // ОШИБКА! ptr1 теперь nullptr
+    
+    std::cout << "Выход из области видимости\n";
+    return 0;
+}
+
+// Задание 4
+// Передача в функцию
+#include <iostream>
+#include <memory>
+
+class Data {
+public:
+    int value;
+    Data(int v) : value(v) { 
+        std::cout << "Создан Data: " << value << "\n"; 
+    }
+    ~Data() { 
+        std::cout << "Удалён Data: " << value << "\n"; 
+    }
+    void print() { 
+        std::cout << "Значение: " << value << "\n"; 
+    }
+};
+
+// Функция принимает unique_ptr и становится владельцем
+void processData(std::unique_ptr<Data> ptr) {
+    std::cout << "Функция processData получила данные: ";
+    ptr->print();
+    // ptr будет автоматически удалён при выходе из функции
+}
+
+int main() {
+    std::cout << "=== ПЕРЕДАЧА В ФУНКЦИЮ ===\n";
+    
+    auto myData = std::make_unique<Data>(100);
+    
+    // Передаём владение в функцию
+    processData(std::move(myData));  // <- ЗДЕСЬ НУЖЕН std::move
+    
+    // myData теперь пустой!
+    if (!myData) {
+        std::cout << "myData больше не владеет ресурсом\n";
+    }
+    
+    return 0;
+}
+// Вернуть из функции
+#include <iostream>
+#include <memory>
+
+class Data {
+public:
+    int value;
+    Data(int v) : value(v) { 
+        std::cout << "Создан Data: " << value << "\n"; 
+    }
+    ~Data() { 
+        std::cout << "Удалён Data: " << value << "\n"; 
+    }
+    void print() { 
+        std::cout << "Значение: " << value << "\n"; 
+    }
+};
+
+// Функция создаёт и возвращает unique_ptr
+std::unique_ptr<Data> createData(int val) {
+    auto localPtr = std::make_unique<Data>(val);
+    // Делаем что-то с данными...
+    localPtr->value *= 2;
+    
+    return localPtr;  // <- ЗДЕСЬ std::move НЕ НУЖЕН
+}
+
+// Ещё один вариант создания
+std::unique_ptr<Data> createDataDirect(int val) {
+    return std::make_unique<Data>(val);  // move не нужен
+}
+
+int main() {
+    std::cout << "=== ВОЗВРАТ ИЗ ФУНКЦИИ ===\n";
+    
+    // Получаем владение от функции
+    auto myData = createData(50);
+    std::cout << "Получены данные из createData: ";
+    myData->print();
+    
+    auto myData2 = createDataDirect(30);
+    std::cout << "Получены данные из createDataDirect: ";
+    myData2->print();
+    
+    return 0;
+}
+// Задание 5
+#include <iostream>
+#include <memory>
+
+struct Resource {
+    int id;
+    Resource(int i) : id(i) { 
+        std::cout << "Ресурс " << id << " создан\n"; 
+    }
+    ~Resource() { 
+        std::cout << "Ресурс " << id << " уничтожен (обычный деструктор)\n"; 
+    }
+};
+
+int main() {
+    std::cout << "=== Пример 2: Лямбда как удалитель ===\n";
+    
+    // Лямбда-удалитель
+    auto customDeleter = [](Resource* r) {
+        std::cout << ">>> Пользовательский удалитель для ресурса " << r->id << "\n";
+        std::cout << ">>> Делаем доп. действия перед удалением\n";
+        delete r;  // Всё равно вызываем delete
+    };
+    
+    // Создаём unique_ptr с лямбдой
+    std::unique_ptr<Resource, decltype(customDeleter)> ptr(new Resource(42), customDeleter);
+    
+    std::cout << "Работаем с ресурсом " << ptr->id << "\n";
+    
+    std::cout << "Выходим - будет вызван custom deleter\n";
+    return 0;
+}
